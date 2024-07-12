@@ -4,7 +4,7 @@
     // Use the base codespace image
     "image": "mcr.microsoft.com/vscode/devcontainers/universal:latest",
   
-    "remoteUser": "vscode",
+    //"remoteUser": "vscode",
     "overrideCommand": false,
 
     // Add the IDs of extensions you want installed when the container is created.
