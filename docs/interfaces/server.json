@@ -1,0 +1,45 @@
+openapi: 3.0.0
+info:
+  title: Server API
+  version: 1.0.0
+  description: API for server-side operations
+paths:
+  /data:
+	get:
+	  summary: Retrieve data
+	  operationId: getData
+	  responses:
+		'200':
+		  description: Successful response
+		  content:
+			application/json:
+			  schema:
+				type: object
+				properties:
+				  data:
+					type: string
+					description: Data retrieved from the server
+	post:
+	  summary: Submit data
+	  operationId: postData
+	  requestBody:
+		required: true
+		content:
+		  application/json:
+			schema:
+			  type: object
+			  properties:
+				data:
+				  type: string
+				  description: Data to be submitted to the server
+	  responses:
+		'200':
+		  description: Data successfully submitted
+		  content:
+			application/json:
+			  schema:
+				type: object
+				properties:
+				  message:
+					type: string
+					description: Confirmation message
