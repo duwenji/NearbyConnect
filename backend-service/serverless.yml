@@ -5,15 +5,16 @@ stages:
   prod:
     observability: true
     #params:
-    #  openai_api_key: ${env:PROD_STRIPE_API_KEY}
+    #  openai_api_key: ${env:PROD_OPENAI_API_KEY}
   default:
     observability: false
     #params:
-    #  openai_api_key: ${env:DEV_STRIPE_API_KEY}
+    #  openai_api_key: ${env:DEV_OPEN_API_KEY}
 
 provider:
   name: aws
   runtime: python3.12
+  profile: default
   region: ap-northeast-1
   stage: dev
   memorySize: 128
@@ -37,6 +38,7 @@ plugins:
   - serverless-offline
 
 package:
+  #individually: true
   exclude:
     - node_modules/**
     - package-lock.json
@@ -50,9 +52,10 @@ custom:
   pythonRequirements:
     layer: true
     dockerizePip: true
+
 functions:
   getItem:
-    handler: handler.get_item
+    handler: lamda/handler.get_item
     memorySize: 128
     timeout: 15
     layers:
@@ -62,7 +65,7 @@ functions:
           path: item/{id}
           method: get
   createItem:
-    handler: handler.create_item
+    handler: lamda/handler.create_item
     memorySize: 128
     timeout: 15
     layers:
@@ -72,7 +75,7 @@ functions:
           path: item
           method: post
   searchByLocation:
-    handler: handler.search_by_location
+    handler: lamda/handler.search_by_location
     memorySize: 128
     timeout: 15
     layers:
