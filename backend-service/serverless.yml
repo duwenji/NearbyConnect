@@ -1,0 +1,114 @@
+org: duwenji
+app: near-by-connect
+service: backend-service
+stages:
+  prod:
+    observability: true
+    #params:
+    #  openai_api_key: ${env:PROD_STRIPE_API_KEY}
+  default:
+    observability: false
+    #params:
+    #  openai_api_key: ${env:DEV_STRIPE_API_KEY}
+
+provider:
+  name: aws
+  runtime: python3.12
+  region: ap-northeast-1
+  stage: dev
+  memorySize: 128
+  timeout: 15
+  environment:
+    STAGE: ${self:provider.stage}
+  tracing:
+    apiGateway: true
+    lambda: true        
+  iam:
+    role:
+      statements:
+        - Effect: "Allow"
+          Action:
+            - "lambda:InvokeFunction"
+            - "DynamoDB:*"
+          Resource: "*"
+
+plugins:
+  - serverless-python-requirements
+  - serverless-offline
+
+package:
+  exclude:
+    - node_modules/**
+    - package-lock.json
+    - package.json
+    - README.md
+    - requirements.txt
+    - __pycache__/**
+    - .pytest_cache/**  
+
+custom:
+  pythonRequirements:
+    layer: true
+    dockerizePip: true
+functions:
+  getItem:
+    handler: handler.get_item
+    memorySize: 128
+    timeout: 15
+    layers:
+      - Ref: PythonRequirementsLambdaLayer
+    events:
+      - http:
+          path: item/{id}
+          method: get
+  createItem:
+    handler: handler.create_item
+    memorySize: 128
+    timeout: 15
+    layers:
+      - Ref: PythonRequirementsLambdaLayer
+    events:
+      - http:
+          path: item
+          method: post
+  searchByLocation:
+    handler: handler.search_by_location
+    memorySize: 128
+    timeout: 15
+    layers:
+      - Ref: PythonRequirementsLambdaLayer
+    events:
+      - http:
+          path: search
+          method: get
+          request:
+            parameters:
+              querystrings:
+                longitude: true
+                latitude: true                
+resources:
+  Resources:
+    MessagesTable:
+      Type: AWS::DynamoDB::Table
+      Properties: 
+        TableName: Messages
+        AttributeDefinitions: 
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: longitude
+            AttributeType: N
+          - AttributeName: latitude
+            AttributeType: N
+        KeySchema: 
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        GlobalSecondaryIndexes:
+          - IndexName: LocationIndex
+            KeySchema:
+              - AttributeName: longitude
+                KeyType: HASH
+              - AttributeName: latitude
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL

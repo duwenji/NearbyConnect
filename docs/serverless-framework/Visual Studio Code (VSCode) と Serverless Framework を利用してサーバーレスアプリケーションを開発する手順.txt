@@ -1,0 +1,95 @@
+
+Visual Studio Code (VSCode) と Serverless Framework を利用してサーバーレスアプリケーションを開発する手順を説明します。
+
+1. **Node.js と npm のインストール**
+   - Serverless FrameworkはNode.js上で動作するため、まずNode.jsとnpm（Node Package Manager）が必要です。公式サイト（https://nodejs.org/）からインストーラをダウンロードしてインストールしてください。
+
+2. **Serverless Framework のインストール**
+   - ターミナルを開き、以下のコマンドを実行してServerless Frameworkをグローバルにインストールします。
+     ```bash
+     npm install -g serverless
+     ```
+
+3. **VSCode のインストール**
+   - VSCodeがインストールされていない場合は、https://code.visualstudio.com/ からインストールします。
+
+4. **新規 Serverless プロジェクトの作成**
+   - 任意のディレクトリに移動し、以下のコマンドを実行して新規プロジェクトを作成します。
+     ```bash
+     serverless create --template aws-nodejs --path my-service
+     ```
+   - `aws-nodejs` はテンプレートの一例です。必要に応じて他のテンプレート（例: `aws-python`）を使用できます。
+   - `my-service` はプロジェクトのディレクトリ名です。
+
+5. **プロジェクトを VSCode で開く**
+   - 作成したプロジェクトディレクトリに移動し、VSCodeで開きます。
+     ```bash
+     cd my-service
+     code .
+     ```
+
+6. **Serverless Framework 拡張機能のインストール**
+   - VSCode で、エクステンション（拡張機能）をインストールして、Serverless Frameworkのサポートを追加します。おすすめの拡張機能は以下の通りです:
+     - **Serverless Framework**
+     - **AWS Toolkit for Visual Studio Code**（AWS サービスとの連携が簡単になります）
+
+7. **AWS CLI のインストールと設定**
+   - Serverless Frameworkを使ってAWSにデプロイするためには、AWS CLIも必要です。以下の手順でインストールと設定を行います:
+     ```bash
+     # AWS CLI のインストール
+     pip install awscli
+
+     # AWS CLI の設定
+     aws configure
+     ```
+   - `aws configure` コマンドを実行すると、AWSアクセスキーID、シークレットアクセスキー、リージョン、出力形式を入力するプロンプトが表示されます。
+
+8. **`serverless.yml` の編集**
+   - プロジェクトのルートディレクトリにある `serverless.yml` ファイルを編集して、設定を行います。
+   - 以下のように、関数やリソースなどの設定を記述します。
+     ```yaml
+     service: my-service
+
+     provider:
+       name: aws
+       runtime: nodejs14.x
+
+     functions:
+       hello:
+         handler: handler.hello
+         events:
+           - http:
+               path: hello
+               method: get
+     ```
+
+9. **ハンドラーファイルの作成**
+   - `handler.js` というファイルが自動生成されているはずです。例えば以下のように関数を定義します。
+     ```javascript
+     'use strict';
+
+     module.exports.hello = async (event) => {
+       return {
+         statusCode: 200,
+         body: JSON.stringify({
+           message: 'Hello, Serverless!',
+           input: event,
+         }),
+       };
+     };
+     ```
+
+10. **デプロイ**
+    - ターミナルで以下のコマンドを実行して、Serverless Frameworkを使用してAWSにデプロイします。
+      ```bash
+      serverless deploy
+      ```
+
+以上で、VSCodeとServerless Frameworkを使用したサーバーレスアプリケーションのセットアップが完了です。デプロイが成功すると、API Gatewayのエンドポイントが出力されるので、それを使用してLambda関数をテストできます。
+
+
+@duwenji ➜ ~/.aws $ more credentials 
+[default]
+aws_access_key_id = AKIARC5CJI3NPB4IFHJ6
+aws_secret_access_key = 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
+region = ap-northeast-1
