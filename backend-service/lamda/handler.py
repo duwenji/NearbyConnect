@@ -3,6 +3,7 @@ import boto3
 import logging
 from decimal import Decimal
 from lamda.utils import DecimalEncoder
+import os
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -12,6 +13,7 @@ table = dynamodb.Table('Messages')
 
 def create_item(event, context):
     logger.info("event: %s", event)
+    openai_api_key = os.getenv('OPENAI_API_KEY')
 
     body = json.loads(event['body'])
     item = {

@@ -4,23 +4,16 @@ service: backend-service
 stages:
   prod:
     observability: true
-    #params:
-    #  openai_api_key: ${env:PROD_OPENAI_API_KEY}
-  default:
+  dev:
     observability: false
-    #params:
-    #  openai_api_key: ${env:DEV_OPEN_API_KEY}
 
 provider:
   name: aws
   runtime: python3.12
   profile: default
   region: ap-northeast-1
-  stage: dev
   memorySize: 128
   timeout: 15
-  environment:
-    STAGE: ${self:provider.stage}
   tracing:
     apiGateway: true
     lambda: true        
@@ -30,12 +23,16 @@ provider:
         - Effect: "Allow"
           Action:
             - "lambda:InvokeFunction"
+          Resource: "*"
+        - Effect: "Allow"
+          Action:
             - "DynamoDB:*"
           Resource: "*"
 
 plugins:
   - serverless-python-requirements
   - serverless-offline
+  - serverless-secrets-plugin
 
 package:
   #individually: true
@@ -49,9 +46,11 @@ package:
     - .pytest_cache/**  
 
 custom:
+  stage: ${opt:stage, 'dev'}
   pythonRequirements:
     layer: true
     dockerizePip: true
+  secrets: ${file(secrets.${self:custom.stage}.yml)}
 
 functions:
   getItem:
