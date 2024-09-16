@@ -15,8 +15,8 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
+secrets.*
 
 # Serverless directories
 .serverless
 node_modules
-secrets.*
