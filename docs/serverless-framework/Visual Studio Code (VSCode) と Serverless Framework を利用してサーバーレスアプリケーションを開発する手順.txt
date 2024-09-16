@@ -87,9 +87,3 @@ Visual Studio Code (VSCode) と Serverless Framework を利用してサーバー
 
 以上で、VSCodeとServerless Frameworkを使用したサーバーレスアプリケーションのセットアップが完了です。デプロイが成功すると、API Gatewayのエンドポイントが出力されるので、それを使用してLambda関数をテストできます。
 
-
-@duwenji ➜ ~/.aws $ more credentials 
-[default]
-aws_access_key_id = AKIARC5CJI3NPB4IFHJ6
-aws_secret_access_key = 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
-region = ap-northeast-1
