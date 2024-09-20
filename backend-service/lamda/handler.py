@@ -31,6 +31,7 @@ def create_item(event, context):
     logger.info("item: %s", item)
 
     table.put_item(Item=item)
+
     return {
         'statusCode': 200,
         'body': json.dumps(item, cls=DecimalEncoder)
@@ -41,8 +42,10 @@ def get_item(event, context):
 
     item_id = event['pathParameters']['id']
     response = table.get_item(Key={'id': item_id})
+
     item = response.get('Item')
     logger.info("item: %s", item)
+    
     if item:
         return {
             'statusCode': 200,
