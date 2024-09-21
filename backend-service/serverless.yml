@@ -107,7 +107,7 @@ functions:
   websocket-connect:
     handler: lamda/websockets.connect
     environment:
-      WEBSOCKET_TABLE_NAME: ${self:service}-${self:custom.stage}-websocketTable
+      WEBSOCKET_TABLE_NAME: ${self:service}-${self:custom.stage}-websocket-table
     layers:
       - Ref: PythonRequirementsLambdaLayer
     events:
@@ -116,7 +116,7 @@ functions:
   websocket-disconnect:
     handler: lamda/websockets.disconnect
     environment:
-      WEBSOCKET_TABLE_NAME: ${self:service}-${self:custom.stage}-websocketTable
+      WEBSOCKET_TABLE_NAME: ${self:service}-${self:custom.stage}-websocket-table
     layers:
       - Ref: PythonRequirementsLambdaLayer
     events:
@@ -125,7 +125,7 @@ functions:
   websocket-message:
     handler: lamda/websockets.message
     environment:
-      WEBSOCKET_TABLE_NAME: ${self:service}-${self:custom.stage}-websocketTable
+      WEBSOCKET_TABLE_NAME: ${self:service}-${self:custom.stage}-websocket-table
     layers:
       - Ref: PythonRequirementsLambdaLayer
     events:
@@ -134,7 +134,7 @@ functions:
   websocket-default:
     handler: lamda/websockets.default
     environment:
-      WEBSOCKET_TABLE_NAME: ${self:service}-${self:custom.stage}-websocketTable
+      WEBSOCKET_TABLE_NAME: ${self:service}-${self:custom.stage}-websocket-table
     layers:
       - Ref: PythonRequirementsLambdaLayer
     events:
@@ -146,7 +146,7 @@ resources:
     WebsocketUsersTable:
       Type: AWS::DynamoDB::Table
       Properties: 
-        TableName: ${self:service}-${self:custom.stage}-websocketTable
+        TableName: ${self:service}-${self:custom.stage}-websocket-table
         AttributeDefinitions: 
           - AttributeName: connectionId
             AttributeType: S

@@ -1,8 +1,12 @@
 import os
 import json
+import logging
 import boto3
 
-table_name = os.environ.get('CONNECTIONS_TABLE')
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+table_name = os.environ.get('WEBSOCKET_TABLE_NAME')
 
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table(table_name)
