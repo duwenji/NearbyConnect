@@ -25,7 +25,10 @@ Retaining existing tags...
 Configuring CORS for bucket...
 Uploading client files to bucket...
 Success! Your site should be available at http://near-by-connect-frontend-packet.s3-website-ap-northeast-1.amazonaws.com/
-```
 
-```
 
+### Remove
+If later on you want to take down the website you can use:
+```
+serverless client remove
+```
