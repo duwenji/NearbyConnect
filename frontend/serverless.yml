@@ -1,12 +1,10 @@
-# "org" ensures this Service is used with the correct Serverless Framework Access Key.
 org: duwenji
-# "app" enables Serverless Framework Dashboard features and sharing them with other Services.
 app: near-by-connect
-# "service" is the name of this project. This will also be added to your AWS resource names.
 service: frontend
 
 provider:
   name: aws
+  runtime: nodejs14.x
   profile: default
   region: ap-northeast-1
 
@@ -14,10 +12,10 @@ plugins:
   - serverless-finch
 
 custom:
-  backetName: near-by-connect-frontend-packet
+  bucketName: near-by-connect-frontend-bucket
   client:
-      bucketName: ${self:custom.backetName}
-      distributionFolder: build
-      indexDocument: index.html
-      errorDocument: index.html
+    bucketName: ${self:custom.bucketName}
+    distributionFolder: build
+    indexDocument: index.html
+    errorDocument: index.html
 
