@@ -26,6 +26,12 @@ def send_to_client(domain, stage, connection_id, message):
     return response
 
 def broadcast_message(message):
+    # Ensure message is in JSON format
+    if not isinstance(message, str):
+        message = json.dumps(message)
+
+    logger.info("broadcast: %s", message)
+
     connections = table.scan()['Items']
     for connection in connections:
         connection_id = connection['connectionId']
@@ -33,7 +39,7 @@ def broadcast_message(message):
             connection['domainName'], 
             connection['stage'], 
             connection_id, 
-            {'message': message})
+            message)
 
 def connect(event, context):
     logger.info("event: %s", event)
@@ -68,6 +74,11 @@ def message(event, context):
     logger.info("event: %s", event)
 
     message = event['body']
+    if isinstance(message, str):
+        logger.info("messageが文字列でした。%s", message)
+        message = json.loads(message)
+    # logger.info("broadcast: %s", message)
+        
     broadcast_message(message)
 
     return {
@@ -76,7 +87,7 @@ def message(event, context):
     }
 
 def default(event, context):
-    logger.info("event: %s", event)
+    # logger.info("event: %s", event)
 
     message = event['body']
 

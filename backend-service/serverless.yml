@@ -130,7 +130,7 @@ functions:
       - Ref: PythonRequirementsLambdaLayer
     events:
       - websocket:
-          route: messsage
+          route: message
   websocket-default:
     handler: lamda/websockets.default
     environment:
