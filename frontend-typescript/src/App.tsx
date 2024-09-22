@@ -1,11 +1,12 @@
+import React from 'react';
+import WebSocketComponent from './components/WebSocketComponent';
 import './App.css';
-import WebSocketComponent from './components/WebSocket';
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <WebSocketComponent/>
+        <WebSocketComponent />
       </header>
     </div>
   );
