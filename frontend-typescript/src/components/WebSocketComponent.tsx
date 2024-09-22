@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef, ChangeEvent } from 'react';
 import throttle from 'lodash.throttle';
 
-
 interface ParsedData {
   action: string;
   data: string;
