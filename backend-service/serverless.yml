@@ -16,7 +16,7 @@ custom:
     layer: true
     dockerizePip: true
   secrets: ${file(secrets.${self:custom.stage}.yml)}
-
+  
 provider:
   name: aws
   runtime: python3.12
@@ -27,6 +27,17 @@ provider:
   tracing:
     apiGateway: true
     lambda: true
+  apiGateway:
+    apiKeys:
+      - NearByConnectApiKey
+    usagePlan:
+      quota:
+        limit: 1000
+        offset: 0
+        period: MONTH
+      throttle:
+        burstLimit: 20
+        rateLimit: 10
   environment:
     APP: ${self:app}
     SERVICE: ${self:service}
@@ -69,6 +80,8 @@ functions:
       - http:
           path: item/{id}
           method: get
+          cors: true
+          private: true
   createItem:
     handler: lamda/handler.create_item
     memorySize: 128
@@ -79,6 +92,8 @@ functions:
       - http:
           path: item
           method: post
+          cors: true
+          private: true
   searchByLocation:
     handler: lamda/handler.search_by_location
     memorySize: 128
@@ -89,6 +104,8 @@ functions:
       - http:
           path: search
           method: get
+          cors: true
+          private: true
           request:
             parameters:
               querystrings:
@@ -104,6 +121,8 @@ functions:
       - http:
           path: generate-message
           method: post
+          cors: true
+          private: true
   websocket-connect:
     handler: lamda/websockets.connect
     environment:
@@ -184,3 +203,39 @@ resources:
         Name: near_by_connect_keys
         Description: "Secrets for Near By Connect application"
         SecretString: '{"openai_api_key":"${self:custom.secrets.OPENAI_API_KEY}"}'
+
+    # ✖ ServerlessError2: An error occurred: ApiGatewayUsagePlanKey - Resource handler returned message: "Usage Plan 0fnnhj cannot be added because API Key rx9hat6b21 cannot reference multiple Usage Plans with the same API Stage: jusce8t6oe:dev (Service: ApiGateway, Status Code: 409, Request ID: 79537315-ee5d-4362-99ef-eac399983ff6)" (RequestToken: 8da0bc51-200e-3994-c333-ad81202a15df, HandlerErrorCode: AlreadyExists).
+
+    # ApiGatewayUsagePlan:
+    #   Type: AWS::ApiGateway::UsagePlan
+    #   Properties:
+    #     UsagePlanName: MyUsagePlan
+    #     ApiStages:
+    #       - ApiId:
+    #           Ref: ApiGatewayRestApi
+    #         Stage: ${self:custom.stage}
+    #     Throttle:
+    #       BurstLimit: 20
+    #       RateLimit: 10
+    #     Quota:
+    #       Limit: 1000
+    #       Period: MONTH
+
+    # ApiGatewayUsagePlanKey:
+    #   Type: AWS::ApiGateway::UsagePlanKey
+    #   Properties:
+    #     KeyId:
+    #       Ref: ApiGatewayApiKey1
+    #     KeyType: API_KEY
+    #     UsagePlanId:
+    #       Ref: ApiGatewayUsagePlan
+
+    # ApiGatewayApiKey1:
+    #   Type: AWS::ApiGateway::ApiKey
+    #   Properties:
+    #     Enabled: true
+    #     Name: NearByConnectApiKey
+    #     StageKeys:
+    #       - RestApiId:
+    #           Ref: ApiGatewayRestApi
+    #         StageName: ${self:custom.stage}
