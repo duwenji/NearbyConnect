@@ -28,6 +28,8 @@ provider:
     apiGateway: true
     lambda: true
   apiGateway:
+    minimumCompressionSize: 1024
+    shouldStartNameWithService: true
     apiKeys:
       - NearByConnectApiKey
     usagePlan:
@@ -81,7 +83,11 @@ functions:
           path: item/{id}
           method: get
           cors: true
-          private: true
+          private: true    
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
   createItem:
     handler: lamda/handler.create_item
     memorySize: 128
@@ -94,6 +100,10 @@ functions:
           method: post
           cors: true
           private: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
   searchByLocation:
     handler: lamda/handler.search_by_location
     memorySize: 128
@@ -106,6 +116,10 @@ functions:
           method: get
           cors: true
           private: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
           request:
             parameters:
               querystrings:
@@ -123,6 +137,10 @@ functions:
           method: post
           cors: true
           private: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
   websocket-connect:
     handler: lamda/websockets.connect
     environment:
@@ -203,6 +221,25 @@ resources:
         Name: near_by_connect_keys
         Description: "Secrets for Near By Connect application"
         SecretString: '{"openai_api_key":"${self:custom.secrets.OPENAI_API_KEY}"}'
+    CognitoUserPool:
+      Type: AWS::Cognito::UserPool
+      Properties:
+        UserPoolName: NearByConnectUserPool
+        AutoVerifiedAttributes:
+          - email
+    ApiGatewayAuthorizer:
+      Type: AWS::ApiGateway::Authorizer
+      Properties:
+        Name: NearByConnectAuthorizer
+        Type: COGNITO_USER_POOLS
+        IdentitySource: method.request.header.Authorization
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        ProviderARNs:
+          - Fn::GetAtt:
+            - CognitoUserPool
+            - Arn
+
 
     # ✖ ServerlessError2: An error occurred: ApiGatewayUsagePlanKey - Resource handler returned message: "Usage Plan 0fnnhj cannot be added because API Key rx9hat6b21 cannot reference multiple Usage Plans with the same API Stage: jusce8t6oe:dev (Service: ApiGateway, Status Code: 409, Request ID: 79537315-ee5d-4362-99ef-eac399983ff6)" (RequestToken: 8da0bc51-200e-3994-c333-ad81202a15df, HandlerErrorCode: AlreadyExists).
 
