@@ -148,6 +148,17 @@ functions:
           path: generate-message-g1
           method: post
           cors: true
+  generateLangChainMessage:
+    handler: lamda/LangChainMessage.generate_message
+    memorySize: 128
+    timeout: 15
+    layers:
+      - Ref: PythonRequirementsLambdaLayer
+    events:
+      - http:
+          path: generate-langchain-message
+          method: post
+          cors: true
   websocket-connect:
     handler: lamda/websockets.connect
     environment:
