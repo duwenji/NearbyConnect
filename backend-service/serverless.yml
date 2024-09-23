@@ -127,7 +127,7 @@ functions:
                 longitude: true
                 latitude: true                
   generateMessage:
-    handler: lamda/AIMessage.generate_message
+    handler: lamda/OpenAIMessage.generate_message
     memorySize: 128
     timeout: 15
     layers:
