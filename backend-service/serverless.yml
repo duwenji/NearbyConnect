@@ -70,6 +70,7 @@ package:
     - __pycache__/**
     - .pytest_cache/**  
     - secrets.*.yml
+    - venv/**
 
 functions:
   getItem:
@@ -126,7 +127,7 @@ functions:
                 longitude: true
                 latitude: true                
   generateMessage:
-    handler: lamda/handler.generate_message
+    handler: lamda/AIMessage.generate_message
     memorySize: 128
     timeout: 15
     layers:
@@ -136,11 +137,17 @@ functions:
           path: generate-message
           method: post
           cors: true
-          private: true
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId:
-              Ref: ApiGatewayAuthorizer
+  generateMessage_G1:
+    handler: lamda/OpenAIMessage.generate_message_G1
+    memorySize: 128
+    timeout: 15
+    layers:
+      - Ref: PythonRequirementsLambdaLayer
+    events:
+      - http:
+          path: generate-message-g1
+          method: post
+          cors: true
   websocket-connect:
     handler: lamda/websockets.connect
     environment:
