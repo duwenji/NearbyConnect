@@ -11,25 +11,23 @@ function App() {
 
   return (
     <div className="App">
-      <header className="App-header">
-        <WebSocketComponent />
-        <h1>地図表示アプリ</h1>
-        <MapComponent latitude={latitude} longitude={longitude} zoom={13} info={info} />
-        <div>
-          <label>
-            緯度:
-            <input type="number" value={latitude} onChange={(e) => setLatitude(parseFloat(e.target.value))} />
-          </label>
-          <label>
-            経度:
-            <input type="number" value={longitude} onChange={(e) => setLongitude(parseFloat(e.target.value))} />
-          </label>
-          <label>
-            情報:
-            <input type="text" value={info} onChange={(e) => setInfo(e.target.value)} />
-          </label>
-        </div>
-      </header>
+      <WebSocketComponent />
+      <h1>地図表示アプリ</h1>
+      <MapComponent latitude={latitude} longitude={longitude} zoom={13} info={info} />
+      <div>
+        <label>
+          緯度:
+          <input type="number" value={latitude} onChange={(e) => setLatitude(parseFloat(e.target.value))} />
+        </label>
+        <label>
+          経度:
+          <input type="number" value={longitude} onChange={(e) => setLongitude(parseFloat(e.target.value))} />
+        </label>
+        <label>
+          情報:
+          <input type="text" value={info} onChange={(e) => setInfo(e.target.value)} />
+        </label>
+      </div>
     </div>
   );
 }
