@@ -11,7 +11,6 @@ function App() {
 
   return (
     <div className="App">
-      <WebSocketComponent />
       <h1>地図表示アプリ</h1>
       <MapComponent latitude={latitude} longitude={longitude} zoom={13} info={info} />
       <div>
