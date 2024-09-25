@@ -1,6 +1,19 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap, VideoOverlay } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
+
+
+// Map: 地図を表示するコンポーネント
+// center: [number, number]: 地図の中心座標
+// zoom: number: 地図のズームレベル
+
+// TileLayer: 地図のタイルを表示するコンポーネント
+// osm: OpenStreetMapのタイルを表示するコンポーネント
+//   url: string: タイルのURL
+//   attribution: string: タイルの著作権表示
+
+mapRef = useRef<HTMLVideoElement>(null);
+
 
 interface MapComponentProps {
   latitude: number;
@@ -24,10 +37,15 @@ const MapComponent: React.FC<MapComponentProps> = ({ latitude, longitude, zoom, 
     [latitude + 0.02, longitude + 0.02]
   ];
   const videoRef = useRef<HTMLVideoElement>(null);
-  useEffect(() => {
+
+  const handleVideoClick = () => {
     if (videoRef.current) {
       videoRef.current.play();
     }
+  };
+
+  useEffect(() => {
+    handleVideoClick();
   }, []);
 
   return (
@@ -41,7 +59,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ latitude, longitude, zoom, 
             {info}
           </Popup>
         </Marker>
-        <VideoOverlay url={videoUrl} bounds={bounds} ref={videoRef} />
+        <VideoOverlay url={videoUrl} bounds={bounds} ref={videoRef} eventHandlers={{ click: handleVideoClick }}/>
       </MapContainer>
     </div>
   );

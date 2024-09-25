@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useRef, ChangeEvent } from 'react';
-import WebSocketComponent from './components/WebSocketComponent';
+import React, { useState } from 'react';
 import MapComponent from './components/MapComponent';
 
 import './App.css';
