@@ -243,8 +243,21 @@ resources:
       Type: AWS::Cognito::UserPool
       Properties:
         UserPoolName: NearByConnectUserPool
+        # An error occurred: CognitoUserPool - Properties validation failed for resource CognitoUserPool with message:
+        # [#: extraneous key [usernameAttributes] is not permitted].
+        # usernameAttributes:
+        #   - email
         AutoVerifiedAttributes:
           - email
+    CognitoUserPoolClient:
+      Type: AWS::Cognito::UserPoolClient
+      Properties:
+        ClientName: NearByConnectUserPoolClient
+        UserPoolId:
+          Ref: CognitoUserPool
+        ExplicitAuthFlows:
+          - ADMIN_NO_SRP_AUTH
+        GenerateSecret: false
     ApiGatewayAuthorizer:
       Type: AWS::ApiGateway::Authorizer
       Properties:
