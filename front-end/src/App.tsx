@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
-import Amplify from 'aws-amplify';
-// import API from 'aws-amplify';
-// import graphqlOperation from 'aws-amplify';
-
-// import { listMessages } from './graphql/queries';
-// import { createMessages } from './graphql/mutations';
+import { listMessages } from './graphql/queries';
+import { createMessages } from './graphql/mutations';
 
 import './App.css';
 

@@ -92,7 +92,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ latitude, longitude, zoom, 
   ];
 
   return (
-    <MapContainer style={{ height: "90vh", width: "100vw" }}>
+    <MapContainer style={{ height: "70vh", width: "100vw" }}>
       <ChangeView center={center} zoom={13} />
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" 
