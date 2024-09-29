@@ -198,6 +198,23 @@ functions:
 
 resources:
   Resources:
+    NearByConnectKeysSecret:
+      Type: AWS::SecretsManager::Secret
+      Properties:
+        Name: near_by_connect_keys
+        Description: "Secrets for Near By Connect application"
+        SecretString: '{"openai_api_key":"${self:custom.secrets.OPENAI_API_KEY}"}'
+    ApiGatewayAuthorizer:
+      Type: AWS::ApiGateway::Authorizer
+      Properties:
+        Name: NearByConnectAuthorizer
+        Type: COGNITO_USER_POOLS
+        IdentitySource: method.request.header.Authorization
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        ProviderARNs:
+          - arn:aws:cognito-idp:${self:custom.secrets.AWS_REGION}:${self:custom.secrets.AWS_ACCOUNT_ID}:userpool/${self:custom.secrets.COGNITO_USER_POOL_ID}
+
     WebsocketUsersTable:
       Type: AWS::DynamoDB::Table
       Properties: 
@@ -233,77 +250,3 @@ resources:
                 KeyType: RANGE
             Projection:
               ProjectionType: ALL
-    NearByConnectKeysSecret:
-      Type: AWS::SecretsManager::Secret
-      Properties:
-        Name: near_by_connect_keys
-        Description: "Secrets for Near By Connect application"
-        SecretString: '{"openai_api_key":"${self:custom.secrets.OPENAI_API_KEY}"}'
-    CognitoUserPool:
-      Type: AWS::Cognito::UserPool
-      Properties:
-        UserPoolName: NearByConnectUserPool
-        # An error occurred: CognitoUserPool - Properties validation failed for resource CognitoUserPool with message:
-        # [#: extraneous key [usernameAttributes] is not permitted].
-        # usernameAttributes:
-        #   - email
-        AutoVerifiedAttributes:
-          - email
-    CognitoUserPoolClient:
-      Type: AWS::Cognito::UserPoolClient
-      Properties:
-        ClientName: NearByConnectUserPoolClient
-        UserPoolId:
-          Ref: CognitoUserPool
-        ExplicitAuthFlows:
-          - ADMIN_NO_SRP_AUTH
-        GenerateSecret: false
-    ApiGatewayAuthorizer:
-      Type: AWS::ApiGateway::Authorizer
-      Properties:
-        Name: NearByConnectAuthorizer
-        Type: COGNITO_USER_POOLS
-        IdentitySource: method.request.header.Authorization
-        RestApiId:
-          Ref: ApiGatewayRestApi
-        ProviderARNs:
-          - Fn::GetAtt:
-            - CognitoUserPool
-            - Arn
-
-
-    # ✖ ServerlessError2: An error occurred: ApiGatewayUsagePlanKey - Resource handler returned message: "Usage Plan 0fnnhj cannot be added because API Key rx9hat6b21 cannot reference multiple Usage Plans with the same API Stage: jusce8t6oe:dev (Service: ApiGateway, Status Code: 409, Request ID: 79537315-ee5d-4362-99ef-eac399983ff6)" (RequestToken: 8da0bc51-200e-3994-c333-ad81202a15df, HandlerErrorCode: AlreadyExists).
-
-    # ApiGatewayUsagePlan:
-    #   Type: AWS::ApiGateway::UsagePlan
-    #   Properties:
-    #     UsagePlanName: MyUsagePlan
-    #     ApiStages:
-    #       - ApiId:
-    #           Ref: ApiGatewayRestApi
-    #         Stage: ${self:custom.stage}
-    #     Throttle:
-    #       BurstLimit: 20
-    #       RateLimit: 10
-    #     Quota:
-    #       Limit: 1000
-    #       Period: MONTH
-
-    # ApiGatewayUsagePlanKey:
-    #   Type: AWS::ApiGateway::UsagePlanKey
-    #   Properties:
-    #     KeyId:
-    #       Ref: ApiGatewayApiKey1
-    #     KeyType: API_KEY
-    #     UsagePlanId:
-    #       Ref: ApiGatewayUsagePlan
-
-    # ApiGatewayApiKey1:
-    #   Type: AWS::ApiGateway::ApiKey
-    #   Properties:
-    #     Enabled: true
-    #     Name: NearByConnectApiKey
-    #     StageKeys:
-    #       - RestApiId:
-    #           Ref: ApiGatewayRestApi
-    #         StageName: ${self:custom.stage}
