@@ -1,0 +1,10 @@
+
+
+
+@aws-amplify/ui-react
+aws-amplify
+@tanstack/query-async-storage-persister
+@tanstack/react-query
+@tanstack/react-query-devtools
+@tanstack/react-query-persist-client
+@types/uuid
